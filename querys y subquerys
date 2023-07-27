@@ -1,0 +1,124 @@
+-- 1)	Para comenzar el desafío debemos crear la bd y la tabla, luego insertar los datos:    CREATE TABLE INSCRITOS (
+cantidad INT,
+fecha DATE,
+fuente VARCHAR);
+
+-- Insertar datos en la tabla "INSCRITOS"
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (44, '2021-01-01', 'Blog');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (56, '2021-01-01', 'Página');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (39, '2021-01-02', 'Blog');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (81, '2021-01-02', 'Página');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (12, '2021-01-03', 'Blog');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (91, '2021-01-03', 'Página');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (48, '2021-01-04', 'Blog');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (45, '2021-01-04', 'Página');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (55, '2021-01-05', 'Blog');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (33, '2021-01-05', 'Página');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (18, '2021-01-06', 'Blog');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (12, '2021-01-06', 'Página');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (34, '2021-01-07', 'Blog');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (24, '2021-01-07', 'Página');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (83, '2021-01-08', 'Blog');
+
+INSERT INTO INSCRITOS (cantidad, fecha, fuente)
+VALUES (99, '2021-01-08', 'Página');
+
+
+-- ¿cuantos registros hay?
+SELECT COUNT(*) FROM INSCRITOS;
+
+-- ¿cuantos inscritos hay en total?
+SELECT SUM(cantidad) from INSCRITOS;
+
+-- ¿cual o cuales son los registros de mayor antiguedad?
+SELECT * FROM INSCRITOS ORDER BY fecha ASC LIMIT 1;
+-- cuales** -- 
+SELECT *
+FROM INSCRITOS
+WHERE fecha = (
+    SELECT MIN(fecha)
+    FROM INSCRITOS
+);
+
+-- ¿Cuántos inscritos hay por día? (entendiendo un día como una fecha distinta de ahora en adelante)
+SELECT fecha, COUNT(*) AS inscritos_por_dia
+FROM INSCRITOS
+WHERE fecha >= CURRENT_DATE
+GROUP BY fecha
+ORDER BY fecha ASC;
+
+--¿cuantos inscritos hay por fuente?
+SELECT fuente, COUNT(*) AS inscritos_por_fuente
+FROM INSCRITOS
+GROUP BY fuente;
+
+-- ¿Qué día se inscribió la mayor cantidad de personas? ¿Cuántas personas se inscribieron en ese día?
+SELECT fecha, COUNT(*) AS total_inscritos
+FROM INSCRITOS
+GROUP BY fecha
+ORDER BY total_inscritos DESC
+LIMIT 1;
+
+--¿Qué día se inscribió la mayor cantidad de personas? ¿Cuántas personas se inscribieron en ese día?
+SELECT fecha, COUNT(*) AS total_inscritos
+FROM INSCRITOS
+WHERE fuente = 'Blog'
+GROUP BY fecha
+HAVING COUNT(*) = (
+    SELECT MAX(total_inscritos)
+    FROM (
+        SELECT fecha, COUNT(*) AS total_inscritos
+        FROM INSCRITOS
+        WHERE fuente = 'Blog'
+        GROUP BY fecha
+    ) AS subquery
+);
+
+-- ¿ cual es el promedio de personas inscritas por dia?
+SELECT AVG(cantidad) AS promedio_inscritos_por_dia
+FROM (
+    SELECT fecha, COUNT(*) AS cantidad
+    FROM INSCRITOS
+    GROUP BY fecha
+) AS subquery;
+
+-- ¿que dia se inscribieron mas de 50 personas?
+SELECT fecha, COUNT(*) AS total_inscritos
+FROM INSCRITOS
+GROUP BY fecha
+HAVING COUNT(*) > 50;
+
+
+--¿Cuál es el promedio general de personas inscritas a partir del tercer día?
+SELECT AVG(cantidad) AS promedio_inscritos_desde_tercer_dia
+FROM INSCRITOS
+WHERE fecha >= '2021-01-03';
