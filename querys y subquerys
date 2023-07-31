@@ -88,7 +88,8 @@ GROUP BY fecha
 ORDER BY total_inscritos DESC
 LIMIT 1;
 
---¿Qué día se inscribió la mayor cantidad de personas? ¿Cuántas personas se inscribieron en ese día?
+--¿Qué días se inscribieron la mayor cantidad de personas utilizando el blog? ¿Cuántas
+personas fueron?
 SELECT fecha, COUNT(*) AS total_inscritos
 FROM INSCRITOS
 WHERE fuente = 'Blog'
